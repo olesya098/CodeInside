@@ -95,6 +95,20 @@ fun NumberSelectionFab(
                         viewModel.updateFloorState(OperationState.FloorSix)
                     }
                 )
+                FloatingActionButtonFun(
+                    text = "П4",
+                    color = if (floorState == OperationState.ConferenceFour) grey else Color.White,
+                    onClick = {
+                        viewModel.updateFloorState(OperationState.ConferenceFour)
+                    }
+                )
+                FloatingActionButtonFun(
+                    text = "П6",
+                    color = if (floorState == OperationState.ConferenceSix) grey else Color.White,
+                    onClick = {
+                        viewModel.updateFloorState(OperationState.ConferenceSix)
+                    }
+                )
             }
         }
     }

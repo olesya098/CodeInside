@@ -5,4 +5,6 @@ sealed class OperationState {
     data object FloorThree : OperationState()
     data object FloorFour : OperationState()
     data object FloorSix : OperationState()
+    data object ConferenceFour : OperationState()
+    data object ConferenceSix : OperationState()
 }

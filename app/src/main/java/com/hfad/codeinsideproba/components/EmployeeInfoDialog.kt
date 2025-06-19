@@ -14,7 +14,7 @@ import com.hfad.codeinsideproba.model.Workstation
 fun EmployeeInfoDialog(workstation: Workstation, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text(text = "Место ${workstation.id}") },
+        title = { Text(text = "${workstation.id}") },
         text = {
             Column {
                 Text(text = workstation.employeeName)

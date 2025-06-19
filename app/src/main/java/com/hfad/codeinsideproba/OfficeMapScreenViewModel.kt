@@ -22,6 +22,12 @@ class OfficeMapScreenViewModel : ViewModel() {
     private val _floorSix = MutableStateFlow<List<Workstation>?>(null)
     val floorSix = _floorSix.asStateFlow()
 
+    private val _conferenceFour = MutableStateFlow<List<Workstation>?>(null)
+    val conferenceFour = _conferenceFour.asStateFlow()
+
+    private val _conferenceSix = MutableStateFlow<List<Workstation>?>(null)
+    val conferenceSix = _conferenceSix.asStateFlow()
+
    private val _floorState = MutableStateFlow<OperationState>(OperationState.Coworking)
     val floorState = _floorState.asStateFlow()
 
@@ -30,6 +36,8 @@ class OfficeMapScreenViewModel : ViewModel() {
         getFloorThreeWorkstation()
         getFloorFourWorkstation()
         getFloorSixWorkstation()
+        getConferenceFourWorkstations()
+        getConferenceSixWorkstations()
     }
 
     fun updateFloorState(operationState: OperationState){
@@ -57,6 +65,16 @@ class OfficeMapScreenViewModel : ViewModel() {
     fun getFloorSixWorkstation() {
         viewModelScope.launch {
             _floorSix.value = WorkstationService().getFloorSixWorkstation()
+        }
+    }
+    fun getConferenceFourWorkstations() {
+        viewModelScope.launch {
+            _conferenceFour.value = WorkstationService().getConferenceFourWorkstations()
+        }
+    }
+    fun getConferenceSixWorkstations() {
+        viewModelScope.launch {
+            _conferenceSix.value = WorkstationService().getConferenceSixWorkstations()
         }
     }
 }
