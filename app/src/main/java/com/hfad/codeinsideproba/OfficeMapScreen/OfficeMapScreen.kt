@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +37,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.codeinsideproba.OfficeMapScreenViewModel
+import com.hfad.codeinsideproba.OfficeViewModel
 import com.hfad.codeinsideproba.R
 import com.hfad.codeinsideproba.components.EditInfoDialog
 import com.hfad.codeinsideproba.components.EmployeeInfoDialog
@@ -45,7 +47,7 @@ import com.hfad.codeinsideproba.model.Workstation
 import com.hfad.codeinsideproba.ui.theme.yello
 
 @Composable
-fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
+fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewModel) {
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     val coworking = viewModel.coworking.collectAsState()
@@ -57,11 +59,13 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
     val floorState = viewModel.floorState.collectAsState()
     var show by remember { mutableStateOf(false) }
 
+//    LaunchedEffect (Unit){
+//        viewModel2.initializeWorkstation()
+//    }
     val pointScale = (1f / scale).coerceIn(0.47f, 2f)
 
     var selectedWorkstation by remember { mutableStateOf<Workstation?>(null) }
 
-    // Получаем название текущего этажа
     val floorTitle = when (floorState.value) {
         OperationState.Coworking -> "Коворкинг"
         OperationState.FloorThree -> "3 Этаж"
@@ -135,20 +139,17 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    coworking.value?.forEach { workstation ->
+                    // Исправлено: добавлена проверка на null и явное указание типа
+                    coworking.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -166,20 +167,17 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    floorThree.value?.forEach { workstation ->
+                    // Аналогичные исправления для других этажей
+                    floorThree.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -197,20 +195,16 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    floorFour.value?.forEach { workstation ->
+                    floorFour.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -228,20 +222,16 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    floorSix.value?.forEach { workstation ->
+                    floorSix.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -259,20 +249,16 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    conferenceFour.value?.forEach { workstation ->
+                    conferenceFour.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -290,20 +276,16 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         modifier = Modifier.fillMaxSize()
                     )
 
-                    // Точки рабочих мест
-                    conferenceSix.value?.forEach { workstation ->
+                    conferenceSix.value?.workstations?.forEach { workstation: Workstation ->
                         WorkstationPoint(
                             workstation = workstation,
                             onClick = { selectedWorkstation = workstation },
-                            onLongClick = {
-                                show = true
-
-                            },
+                            onLongClick = { show = true },
                             modifier = Modifier
                                 .align(Alignment.TopStart)
                                 .offset(
-                                    x = (workstation.x * maxWidth.value).dp,
-                                    y = (workstation.y * maxHeight.value).dp
+                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                    y = (workstation.y.toFloat() * maxHeight.value).dp
                                 )
                                 .graphicsLayer {
                                     scaleX = pointScale
@@ -312,8 +294,8 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel) {
                         )
                     }
                 }
-
             }
+
 
         }
         if (show) {

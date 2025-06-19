@@ -1,15 +1,13 @@
 package com.hfad.codeinsideproba.model
 
-// Data class для хранения информации о рабочем месте
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Workstation(
-    // Уникальный идентификатор рабочего места
-    val id: String,
-    // Координата X для размещения на карте
-    val x: Float,
-    // Координата Y для размещения на карте
-    val y: Float,
-    // Имя сотрудника на этом месте
-    val employeeName: String,
-    // Должность сотрудника
-    val position: String
+    val id: String = "",
+    val x: Float = 0f,
+    val y: Float = 0f,
+    val employeeName: String = "",
+    val position: String = "",
+    val isBusy: Boolean = false
 )
