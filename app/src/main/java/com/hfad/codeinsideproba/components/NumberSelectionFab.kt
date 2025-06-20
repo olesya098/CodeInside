@@ -37,7 +37,7 @@ fun NumberSelectionFab(
     viewModel: OfficeMapScreenViewModel
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val floorState by viewModel.floorState.collectAsState() // Получаем текущее состояние этажа
+    val floorState by viewModel.floorState.collectAsState()
 
     Column(
         horizontalAlignment = Alignment.End,

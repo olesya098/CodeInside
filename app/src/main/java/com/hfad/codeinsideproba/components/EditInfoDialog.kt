@@ -41,12 +41,12 @@ fun EditInfoDialog(
 
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties() // можно настроить дополнительные свойства
+        properties = DialogProperties()
     ) {
         Surface(
-            shape = RoundedCornerShape(16.dp), // Скругление углов
+            shape = RoundedCornerShape(16.dp),
             modifier = Modifier
-                .widthIn(min = 280.dp, max = 560.dp) // Опционально: ограничение ширины
+                .widthIn(min = 280.dp, max = 560.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

@@ -18,25 +18,17 @@ import androidx.navigation.compose.rememberNavController
 import com.hfad.codeinsideproba.navigation.Navigation
 import com.hfad.codeinsideproba.ui.theme.CodeinsideProbaTheme
 
-// Главная Activity приложения
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        // Включаем edge-to-edge режим (на весь экран)
         enableEdgeToEdge()
-        // Устанавливаем Compose содержимое
         setContent {
-            // Применяем собственную тему приложения
             CodeinsideProbaTheme {
-                // Surface - базовый контейнер с фоном
                 Surface(
-                    // Занимает весь доступный размер
                     modifier = Modifier.fillMaxSize(),
-                    // Цвет фона из темы
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    // Отображаем основной экран с картой офиса
                     Navigation()
                 }
             }
