@@ -31,10 +31,14 @@ import androidx.compose.ui.window.DialogProperties
 import kotlinx.serialization.json.JsonNull.content
 
 @Composable
-fun EditInfoDialog(onDismiss: () -> Unit) {
+fun EditInfoDialog(
+    title: String,
+    descripton: String,
+    onDismiss: () -> Unit,
+    onTitle: (String) -> Unit,
+    onDescription: (String) -> Unit
+) {
 
-    var title by rememberSaveable { mutableStateOf("") }
-    var descripton by rememberSaveable { mutableStateOf("") }
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties() // можно настроить дополнительные свойства
@@ -63,14 +67,14 @@ fun EditInfoDialog(onDismiss: () -> Unit) {
                 TextFields(
                     value = title,
                     text = "Название",
-                    onvalChange = { title = it }
+                    onvalChange = onTitle
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
                 TextFields(
                     value = descripton,
                     text = "Должность",
-                    onvalChange = { descripton = it }
+                    onvalChange = onDescription
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 CustomButton(

@@ -58,12 +58,12 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
     val conferenceSix = viewModel.conferenceSix.collectAsState()
     val floorState = viewModel.floorState.collectAsState()
     var show by remember { mutableStateOf(false) }
+    var editName by remember { mutableStateOf("") }
+    var editPosition by remember { mutableStateOf("") }
 
-//    LaunchedEffect (Unit){
-//        viewModel2.initializeWorkstation()
-//    }
+    val headerHeight = 100.dp
+    val maxMargin = 0.5f
     val pointScale = (1f / scale).coerceIn(0.47f, 2f)
-
     var selectedWorkstation by remember { mutableStateOf<Workstation?>(null) }
 
     val floorTitle = when (floorState.value) {
@@ -76,23 +76,13 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
         else -> ""
     }
 
-    Box(
-        modifier = Modifier
-            .background(Color.White)
-            .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTransformGestures { centroid, pan, zoom, rotation ->
-                    scale = (scale * zoom).coerceIn(0.5f, 3f)
-                    offset += pan
-                }
-            }
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        // Черная шапка
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .fillMaxWidth()
-                .height(100.dp)
-
+                .height(headerHeight)
                 .background(Color.Black)
                 .border(
                     width = 1.5.dp,
@@ -102,7 +92,6 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
         ) {
             Box(
                 modifier = Modifier
-                    .align(Alignment.Center)
                     .clip(shape = RoundedCornerShape(16.dp))
                     .background(Color.Black)
                     .border(
@@ -120,201 +109,244 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
             }
         }
 
-        BoxWithConstraints(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offset.x,
-                    translationY = offset.y
-                )
+                .padding(top = headerHeight)
+                .background(Color.White)
+                .pointerInput(Unit) {
+                    detectTransformGestures { centroid, pan, zoom, rotation ->
+                        val newScale = (scale * zoom).coerceIn(0.5f, 3f)
+                        val newOffset = offset + pan
+
+                        val maxOffsetX = if (newScale > 1f) {
+                            (size.width * (newScale - 1)) * 0.5f
+                        } else {
+                            0f
+                        }
+
+                        val maxOffsetY = if (newScale > 1f) {
+                            (size.height * (newScale - 1)) * 0.5f
+                        } else {
+                            0f
+                        }
+
+                        val constrainedX = if (maxOffsetX > 0) {
+                            newOffset.x.coerceIn(-maxOffsetX, maxOffsetX)
+                        } else {
+                            0f
+                        }
+
+                        val constrainedY = if (maxOffsetY > 0) {
+                            newOffset.y.coerceIn(-maxOffsetY, maxOffsetY)
+                        } else {
+                            0f
+                        }
+
+                        scale = newScale
+                        offset = Offset(constrainedX, constrainedY)
+                    }
+                }
         ) {
-            when (floorState.value) {
-                OperationState.Coworking -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.korvorking),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
+            BoxWithConstraints(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .graphicsLayer(
+                        scaleX = scale,
+                        scaleY = scale,
+                        translationX = offset.x,
+                        translationY = offset.y
                     )
-
-                    // Исправлено: добавлена проверка на null и явное указание типа
-                    coworking.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
+            ) {
+                when (floorState.value) {
+                    OperationState.Coworking -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.korvorking),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
                         )
+
+                        coworking.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
+                    }
+
+                    OperationState.FloorThree -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.flover3),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        floorThree.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
+                    }
+
+                    OperationState.FloorFour -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.floor4),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        floorFour.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
+                    }
+
+                    OperationState.FloorSix -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.floor6),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        floorSix.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
+                    }
+
+                    OperationState.ConferenceFour -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.conference4),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        conferenceFour.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
+                    }
+
+                    OperationState.ConferenceSix -> {
+                        Image(
+                            painter = painterResource(id = R.drawable.conference6),
+                            contentDescription = "Office Map",
+                            contentScale = ContentScale.Fit,
+                            modifier = Modifier.fillMaxSize()
+                        )
+
+                        conferenceSix.value?.workstations?.forEach { workstation: Workstation ->
+                            WorkstationPoint(
+                                workstation = workstation,
+                                onClick = { selectedWorkstation = workstation },
+                                onLongClick = { show = true },
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .offset(
+                                        x = (workstation.x.toFloat() * maxWidth.value).dp,
+                                        y = (workstation.y.toFloat() * maxHeight.value).dp
+                                    )
+                                    .graphicsLayer {
+                                        scaleX = pointScale
+                                        scaleY = pointScale
+                                    }
+                            )
+                        }
                     }
                 }
 
-                OperationState.FloorThree -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.flover3),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
 
-                    // Аналогичные исправления для других этажей
-                    floorThree.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
-                        )
-                    }
-                }
-
-                OperationState.FloorFour -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.floor4),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    floorFour.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
-                        )
-                    }
-                }
-
-                OperationState.FloorSix -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.floor6),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    floorSix.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
-                        )
-                    }
-                }
-
-                OperationState.ConferenceFour -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.conference4),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    conferenceFour.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
-                        )
-                    }
-                }
-
-                OperationState.ConferenceSix -> {
-                    Image(
-                        painter = painterResource(id = R.drawable.conference6),
-                        contentDescription = "Office Map",
-                        contentScale = ContentScale.Fit,
-                        modifier = Modifier.fillMaxSize()
-                    )
-
-                    conferenceSix.value?.workstations?.forEach { workstation: Workstation ->
-                        WorkstationPoint(
-                            workstation = workstation,
-                            onClick = { selectedWorkstation = workstation },
-                            onLongClick = { show = true },
-                            modifier = Modifier
-                                .align(Alignment.TopStart)
-                                .offset(
-                                    x = (workstation.x.toFloat() * maxWidth.value).dp,
-                                    y = (workstation.y.toFloat() * maxHeight.value).dp
-                                )
-                                .graphicsLayer {
-                                    scaleX = pointScale
-                                    scaleY = pointScale
-                                }
-                        )
-                    }
-                }
             }
+            if (show) {
+                EditInfoDialog(
+                    title = "",
+                    descripton = "",
+                    onDismiss = { show = false },
+                    onTitle = {},
+                    onDescription = {})
 
+            }
+            NumberSelectionFab(
+                modifier = Modifier.align(
+                    Alignment.BottomEnd
+                ),
+                viewModel = viewModel,
 
+                )
         }
-        if (show) {
-            EditInfoDialog(onDismiss = { show = false })
 
-        }
-        NumberSelectionFab(
-            modifier = Modifier.align(
-                Alignment.BottomEnd
-            ),
-            viewModel = viewModel,
-
+        selectedWorkstation?.let { workstation ->
+            EmployeeInfoDialog(
+                workstation = workstation,
+                onDismiss = { selectedWorkstation = null }
             )
-    }
-
-    selectedWorkstation?.let { workstation ->
-        EmployeeInfoDialog(
-            workstation = workstation,
-            onDismiss = { selectedWorkstation = null }
-        )
+        }
     }
 }
