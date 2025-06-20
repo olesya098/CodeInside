@@ -52,35 +52,67 @@ class WorkstationService {
         return dataGet.toObject(FloorModel::class.java)
 
     }
+
     suspend fun getFloorThreeWorkStation(): FloorModel? {
         val dataGet = database.collection(collectionName).document("floor3").get().await()
 
         return dataGet.toObject(FloorModel::class.java)
 
     }
+
     suspend fun getFloorFourWorkStation(): FloorModel? {
         val dataGet = database.collection(collectionName).document("floor4").get().await()
 
         return dataGet.toObject(FloorModel::class.java)
 
     }
+
     suspend fun getFloorSixWorkStation(): FloorModel? {
         val dataGet = database.collection(collectionName).document("floor6").get().await()
 
         return dataGet.toObject(FloorModel::class.java)
 
     }
+
     suspend fun getConferenceFourWorkStations(): FloorModel? {
         val dataGet = database.collection(collectionName).document("conference4").get().await()
 
         return dataGet.toObject(FloorModel::class.java)
 
     }
+
     suspend fun getConferenceSixWorkStations(): FloorModel? {
         val dataGet = database.collection(collectionName).document("conference6").get().await()
 
         return dataGet.toObject(FloorModel::class.java)
 
+    }
+
+    suspend fun updateWorkstation(
+        floorId: String,
+        workstationId: String,
+        employeeName: String,
+        position: String,
+    ) {
+        val floorRef = database.collection(collectionName).document(floorId)
+        val floorData = floorRef.get().await().toObject(FloorModel::class.java)
+        val updateWorkstation = floorData?.workstations?.map {
+            if (it.id == workstationId){
+                it.copy(
+                    employeeName = employeeName,
+                    position = position,
+                    isBusy = employeeName.isNotEmpty()
+                )
+            }else{
+                it
+            }
+        }
+        if (updateWorkstation != null){
+            floorRef.update(
+                "workstations",
+                updateWorkstation
+            ).await()
+        }
     }
 
 }

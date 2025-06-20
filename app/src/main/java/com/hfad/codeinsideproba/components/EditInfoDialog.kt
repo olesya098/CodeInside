@@ -18,6 +18,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,12 +34,14 @@ import kotlinx.serialization.json.JsonNull.content
 @Composable
 fun EditInfoDialog(
     title: String,
-    descripton: String,
+    description: String,
     onDismiss: () -> Unit,
     onTitle: (String) -> Unit,
-    onDescription: (String) -> Unit
+    onDescription: (String) -> Unit,
+    onSave: (String, String) -> Unit
 ) {
-
+    val name = remember { mutableStateOf(title) }
+    val position = remember { mutableStateOf(description) }
     Dialog(
         onDismissRequest = onDismiss,
         properties = DialogProperties()
@@ -65,21 +68,32 @@ fun EditInfoDialog(
                     textAlign = TextAlign.Center,
                 )
                 TextFields(
-                    value = title,
+                    value = name.value,
                     text = "Название",
-                    onvalChange = onTitle
+                    onvalChange = {
+                        name.value = it
+                        onTitle(it)
+                    }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
                 TextFields(
-                    value = descripton,
+                    value = position.value,
                     text = "Должность",
-                    onvalChange = onDescription
+                    onvalChange = {
+                        position.value = it
+                        onDescription(it)
+                    }
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 CustomButton(
-                    title = "Добавить",
-                    onClick = onDismiss,
+                    title = "Сохранить",
+                    onClick = {
+                        onSave(
+                            name.value,
+                            position.value
+                        )
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)

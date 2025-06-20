@@ -7,9 +7,9 @@ import com.hfad.codeinsideproba.network.WorkstationService
 import kotlinx.coroutines.launch
 
 class OfficeViewModel: ViewModel() {
-    init {
-        initializeWorkstation()
-    }
+//    init {
+//        initializeWorkstation()
+//    }
     fun initializeWorkstation(){
         viewModelScope.launch {
             try {

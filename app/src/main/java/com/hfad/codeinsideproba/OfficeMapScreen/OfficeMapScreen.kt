@@ -12,13 +12,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,11 +56,22 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
     var show by remember { mutableStateOf(false) }
     var editName by remember { mutableStateOf("") }
     var editPosition by remember { mutableStateOf("") }
-
     val headerHeight = 100.dp
-    val maxMargin = 0.5f
     val pointScale = (1f / scale).coerceIn(0.47f, 2f)
     var selectedWorkstation by remember { mutableStateOf<Workstation?>(null) }
+    var selectedWorkstationForEdit by remember { mutableStateOf<Workstation?>(null) }
+
+
+    val currentWorkstation = when (floorState.value) {
+        OperationState.Coworking -> coworking.value?.workstations
+        OperationState.FloorThree -> floorThree.value?.workstations
+        OperationState.FloorFour -> floorFour.value?.workstations
+        OperationState.FloorSix -> floorSix.value?.workstations
+        OperationState.ConferenceFour -> conferenceFour.value?.workstations
+        OperationState.ConferenceSix -> conferenceSix.value?.workstations
+        else -> null
+    }
+
 
     val floorTitle = when (floorState.value) {
         OperationState.Coworking -> "Коворкинг"
@@ -76,8 +83,19 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
         else -> ""
     }
 
+
+
+    val title = when (floorState.value) {
+        OperationState.Coworking -> "Расписание: "
+        OperationState.FloorThree -> ""
+        OperationState.FloorFour -> ""
+        OperationState.FloorSix -> ""
+        OperationState.ConferenceFour -> "Расписание: "
+        OperationState.ConferenceSix -> "Расписание: "
+        else -> ""
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
-        // Черная шапка
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -111,7 +129,7 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
 
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(top = headerHeight)
                 .background(Color.White)
                 .pointerInput(Unit) {
@@ -148,6 +166,20 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                     }
                 }
         ) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(10.dp)
+                    .fillMaxWidth()
+                    .height(headerHeight),
+                contentAlignment = Alignment.TopStart
+            ) {
+                Text(
+                    text = title
+                )
+
+            }
+
             BoxWithConstraints(
                 modifier = Modifier
                     .fillMaxSize()
@@ -171,7 +203,11 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -198,7 +234,10 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstation = workstation
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -225,7 +264,10 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstation = workstation
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -252,7 +294,10 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstation = workstation
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -279,7 +324,10 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstation = workstation
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -306,7 +354,10 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                             WorkstationPoint(
                                 workstation = workstation,
                                 onClick = { selectedWorkstation = workstation },
-                                onLongClick = { show = true },
+                                onLongClick = {
+                                    selectedWorkstation = workstation
+                                    show = true
+                                },
                                 modifier = Modifier
                                     .align(Alignment.TopStart)
                                     .offset(
@@ -324,13 +375,31 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
 
 
             }
-            if (show) {
+            if (show && selectedWorkstationForEdit != null) {
                 EditInfoDialog(
-                    title = "",
-                    descripton = "",
+                    title = selectedWorkstationForEdit?.employeeName ?: "",
+                    description = selectedWorkstationForEdit?.position ?: "",
                     onDismiss = { show = false },
-                    onTitle = {},
-                    onDescription = {})
+                    onTitle = { editName = it },
+                    onDescription = { editPosition = it },
+                    onSave = { name, position ->
+                        viewModel.updateWorkstation(
+                            floorId = when (floorState.value) {
+                                OperationState.Coworking -> "coworking"
+                                OperationState.FloorThree -> "floor3"
+                                OperationState.FloorFour -> "floor4"
+                                OperationState.FloorSix -> "floor6"
+                                OperationState.ConferenceFour -> "conference4"
+                                OperationState.ConferenceSix -> "conference6"
+                                else -> ""
+                            },
+                            workstationId = selectedWorkstationForEdit?.id ?: "",
+                            employeeName = name,
+                            position = position
+                        )
+                        show = false
+
+                    })
 
             }
             NumberSelectionFab(
@@ -342,7 +411,12 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
                 )
         }
 
-        selectedWorkstation?.let { workstation ->
+        val upDateSelectedWorkstation = selectedWorkstation?.let { ws ->
+            currentWorkstation?.find {
+                it.id == ws.id
+            }
+        }
+        upDateSelectedWorkstation?.let { workstation ->
             EmployeeInfoDialog(
                 workstation = workstation,
                 onDismiss = { selectedWorkstation = null }

@@ -1,5 +1,6 @@
 package com.hfad.codeinsideproba
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.codeinsideproba.model.FloorModel
@@ -35,7 +36,7 @@ class OfficeMapScreenViewModel : ViewModel() {
     private val _conferenceSix = MutableStateFlow<FloorModel?>(null)
     val conferenceSix = _conferenceSix.asStateFlow()
 
-   private val _floorState = MutableStateFlow<OperationState>(OperationState.Coworking)
+    private val _floorState = MutableStateFlow<OperationState>(OperationState.Coworking)
     val floorState = _floorState.asStateFlow()
 
     init {
@@ -47,13 +48,13 @@ class OfficeMapScreenViewModel : ViewModel() {
         getConferenceSixWorkstations()
     }
 
-    fun updateFloorState(operationState: OperationState){
+    fun updateFloorState(operationState: OperationState) {
         viewModelScope.launch {
             _floorState.value = operationState
         }
     }
 
-    fun getCoworkingWorkstations()  {
+    fun getCoworkingWorkstations() {
         viewModelScope.launch {
             _coworking.value = WorkstationService().getCoworkingWorkStations()
         }
@@ -64,24 +65,65 @@ class OfficeMapScreenViewModel : ViewModel() {
             _floorThree.value = WorkstationService().getFloorThreeWorkStation()
         }
     }
+
     fun getFloorFourWorkstation() {
         viewModelScope.launch {
             _floorFour.value = WorkstationService().getFloorFourWorkStation()
         }
     }
+
     fun getFloorSixWorkstation() {
         viewModelScope.launch {
             _floorSix.value = WorkstationService().getFloorSixWorkStation()
         }
     }
+
     fun getConferenceFourWorkstations() {
         viewModelScope.launch {
             _conferenceFour.value = WorkstationService().getConferenceFourWorkStations()
         }
     }
+
     fun getConferenceSixWorkstations() {
         viewModelScope.launch {
             _conferenceSix.value = WorkstationService().getConferenceSixWorkStations()
         }
     }
+
+
+    fun updateWorkstation(
+        floorId: String,
+        workstationId: String,
+        employeeName: String,
+        position: String,
+    ) {
+        viewModelScope.launch {
+            try {
+                WorkstationService().updateWorkstation(
+                    floorId,
+                    workstationId,
+                    employeeName,
+                    position
+                )
+                refreshData()
+            } catch (e: Exception) {
+                Log.e("My", "Exception")
+            }
+
+        }
+
+    }
+    private fun refreshData(){
+        when (_floorState.value){
+            OperationState.Coworking -> getCoworkingWorkstations()
+            OperationState.FloorThree -> getFloorThreeWorkstation()
+            OperationState.FloorFour -> getFloorFourWorkstation()
+            OperationState.FloorSix -> getFloorSixWorkstation()
+            OperationState.ConferenceFour -> getConferenceFourWorkstations()
+            OperationState.ConferenceSix -> getConferenceSixWorkstations()
+
+        }
+    }
+
+
 }
