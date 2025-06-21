@@ -32,6 +32,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.hfad.codeinsideproba.OfficeMapScreenViewModel
 import com.hfad.codeinsideproba.OfficeViewModel
 //import com.hfad.codeinsideproba.OfficeViewModel
@@ -88,17 +89,17 @@ fun OfficeMapScreen(
     }
 
 
-    val title = when (floorState.value) {
-        OperationState.Coworking -> "Расписание: "
-        OperationState.FloorThree -> ""
-        OperationState.FloorFour -> ""
-        OperationState.FloorSix -> ""
-        OperationState.ConferenceFour -> "Расписание: "
-        OperationState.ConferenceSix -> "Расписание: "
-        else -> ""
-    }
+//    val title = when (floorState.value) {
+//        OperationState.Coworking -> "Расписание: "
+//        OperationState.FloorThree -> ""
+//        OperationState.FloorFour -> ""
+//        OperationState.FloorSix -> ""
+//        OperationState.ConferenceFour -> "Расписание: "
+//        OperationState.ConferenceSix -> "Расписание: "
+//        else -> ""
+//    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(Color.White)) {
         Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -108,7 +109,8 @@ fun OfficeMapScreen(
                 .border(
                     width = 1.5.dp,
                     color = Color.Black.copy(alpha = 0.8f),
-                ),
+                )
+                .zIndex(2f),
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -132,14 +134,13 @@ fun OfficeMapScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .padding(top = headerHeight)
-                .background(Color.White)
                 .pointerInput(Unit) {
                     detectTransformGestures { centroid, pan, zoom, rotation ->
                         val newScale = (scale * zoom).coerceIn(0.5f, 3f)
-                        val newOffset = offset + pan
 
+                        // Максимальное смещение - 50% от размера экрана
                         val maxOffsetX = if (newScale > 1f) {
                             (size.width * (newScale - 1)) * 0.5f
                         } else {
@@ -152,17 +153,12 @@ fun OfficeMapScreen(
                             0f
                         }
 
-                        val constrainedX = if (maxOffsetX > 0) {
-                            newOffset.x.coerceIn(-maxOffsetX, maxOffsetX)
-                        } else {
-                            0f
-                        }
+                        // Ограничиваем смещение по обеим осям
+                        val constrainedX = (offset.x + pan.x)
+                            .coerceIn(-maxOffsetX, maxOffsetX)
 
-                        val constrainedY = if (maxOffsetY > 0) {
-                            newOffset.y.coerceIn(-maxOffsetY, maxOffsetY)
-                        } else {
-                            0f
-                        }
+                        val constrainedY = (offset.y + pan.y)
+                            .coerceIn(-maxOffsetY, maxOffsetY)
 
                         scale = newScale
                         offset = Offset(constrainedX, constrainedY)
@@ -177,9 +173,9 @@ fun OfficeMapScreen(
                     .height(headerHeight),
                 contentAlignment = Alignment.TopStart
             ) {
-                Text(
-                    text = title
-                )
+//                Text(
+//                    text = title
+//                )
 
             }
 
@@ -205,10 +201,13 @@ fun OfficeMapScreen(
                         coworking.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
+                                onClick = {
+                                    selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
                                 onLongClick = {
                                     selectedWorkstationForEdit = workstation
-
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier
@@ -236,9 +235,13 @@ fun OfficeMapScreen(
                         floorThree.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
-                                onLongClick = {
+                                onClick = {
                                     selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier
@@ -266,9 +269,13 @@ fun OfficeMapScreen(
                         floorFour.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
-                                onLongClick = {
+                                onClick = {
                                     selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier
@@ -296,9 +303,13 @@ fun OfficeMapScreen(
                         floorSix.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
-                                onLongClick = {
+                                onClick = {
                                     selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier
@@ -326,9 +337,13 @@ fun OfficeMapScreen(
                         conferenceFour.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
-                                onLongClick = {
+                                onClick = {
                                     selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier
@@ -356,9 +371,13 @@ fun OfficeMapScreen(
                         conferenceSix.value?.workstations?.forEach { workstation: Workstation ->
                             WorkstationPoint(
                                 workstation = workstation,
-                                onClick = { selectedWorkstation = workstation },
-                                onLongClick = {
+                                onClick = {
                                     selectedWorkstation = workstation
+                                    selectedWorkstationForEdit = null
+                                },
+                                onLongClick = {
+                                    selectedWorkstationForEdit = workstation
+                                    selectedWorkstation = null
                                     show = true
                                 },
                                 modifier = Modifier

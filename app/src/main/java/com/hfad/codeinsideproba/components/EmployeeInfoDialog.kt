@@ -66,6 +66,7 @@ fun EmployeeInfoDialog(workstation: Workstation, onDismiss: () -> Unit) {
                 Text(
                     text = workstation.employeeName,
                     color = Color.Black,
+                    lineHeight = 30.sp,
                     fontSize = 25.sp,
                     modifier = Modifier
                         .padding(bottom = 16.dp, top = 20.dp)

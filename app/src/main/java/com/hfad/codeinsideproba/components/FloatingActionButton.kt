@@ -30,6 +30,6 @@ fun FloatingActionButtonFun(
                 shape = RoundedCornerShape(15.dp)
             )
     ) {
-        Text(text = text)
+        Text(text = text, color = Color.Black)
     }
 }

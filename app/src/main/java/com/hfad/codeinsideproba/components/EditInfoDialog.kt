@@ -48,6 +48,7 @@ fun EditInfoDialog(
     ) {
         Surface(
             shape = RoundedCornerShape(16.dp),
+            color = Color.White,
             modifier = Modifier
                 .widthIn(min = 280.dp, max = 560.dp)
         ) {
