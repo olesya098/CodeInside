@@ -5,14 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hfad.codeinsideproba.model.FloorModel
 import com.hfad.codeinsideproba.model.OperationState
-import com.hfad.codeinsideproba.model.Workstation
 import com.hfad.codeinsideproba.network.WorkstationService
-import com.hfad.codeinsideproba.network.getConferenceFourWorkstations
-import com.hfad.codeinsideproba.network.getConferenceSixWorkstations
-import com.hfad.codeinsideproba.network.getCoworkingWorkstations
-import com.hfad.codeinsideproba.network.getFloorFourWorkstation
-import com.hfad.codeinsideproba.network.getFloorSixWorkstation
-import com.hfad.codeinsideproba.network.getFloorThreeWorkstation
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -99,19 +92,22 @@ class OfficeMapScreenViewModel : ViewModel() {
     ) {
         viewModelScope.launch {
             try {
+                Log.d("OfficeMapVM",
+                    "Requesting update for $workstationId on $floorId\n" +
+                            "Name: $employeeName, Position: $position")
+
                 WorkstationService().updateWorkstation(
                     floorId,
                     workstationId,
                     employeeName,
                     position
                 )
+                Log.d("OfficeMapVM", "Refresh data after update")
                 refreshData()
             } catch (e: Exception) {
-                Log.e("My", "Exception")
+                Log.e("OfficeMapVM", "Error updating workstation", e)
             }
-
         }
-
     }
     private fun refreshData(){
         when (_floorState.value){

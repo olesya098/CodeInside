@@ -1,5 +1,6 @@
 package com.hfad.codeinsideproba.components
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +29,19 @@ fun WorkstationPoint(
     onLongClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    Log.d("WorkstationPoint",
+        "Workstation ID: ${workstation.id}, " +
+                "Employee: ${workstation.employeeName}, " +
+                "Position: ${workstation.position}")
+
+    val pointColor = if (workstation.employeeName.isNotEmpty()) {
+        Log.d("WorkstationPoint", "Setting color to GREEN (occupied) for ${workstation.id}")
+        Color.Red.copy(alpha = 0.7f)
+    } else {
+        Log.d("WorkstationPoint", "Setting color to RED (free) for ${workstation.id}")
+        Color.Green.copy(alpha = 0.7f)
+    }
+
     Box(
         modifier = modifier
             .size(28.dp)
@@ -59,7 +73,7 @@ fun WorkstationPoint(
             modifier = Modifier
                 .size(20.dp)
                 .clip(CircleShape)
-                .background(Color.Red.copy(alpha = 0.5f))
+                .background(pointColor)
                 .border(
                     width = 1.dp,
                     color = Color.White.copy(alpha = 0.6f),

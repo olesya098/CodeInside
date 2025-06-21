@@ -6,12 +6,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 
 
@@ -19,7 +23,8 @@ import androidx.compose.ui.unit.dp
 fun TextFields(
     value: String,
     text: String,
-    onvalChange: (String) -> Unit
+    onvalChange: (String) -> Unit,
+    focusManager: FocusManager = LocalFocusManager.current
 ) {
     androidx.compose.material3.TextField(
         modifier = Modifier
@@ -46,13 +51,18 @@ fun TextFields(
             unfocusedContainerColor = Color.Transparent,
             cursorColor = Color.Black
         ),
+        keyboardActions = KeyboardActions(
+            onNext = {
+                focusManager.moveFocus(FocusDirection.Down)
+            }
+        ),
         shape = RoundedCornerShape(16.dp),
         singleLine = true,
         placeholder = {
             Text(
                 text,
                 style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
+                color = Color.Gray
             )
         },
     )

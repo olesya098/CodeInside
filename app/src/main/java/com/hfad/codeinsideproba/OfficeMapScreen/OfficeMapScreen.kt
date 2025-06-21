@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.hfad.codeinsideproba.OfficeMapScreenViewModel
 import com.hfad.codeinsideproba.OfficeViewModel
+//import com.hfad.codeinsideproba.OfficeViewModel
 import com.hfad.codeinsideproba.R
 import com.hfad.codeinsideproba.components.EditInfoDialog
 import com.hfad.codeinsideproba.components.EmployeeInfoDialog
@@ -43,7 +44,10 @@ import com.hfad.codeinsideproba.model.Workstation
 import com.hfad.codeinsideproba.ui.theme.yello
 
 @Composable
-fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewModel) {
+fun OfficeMapScreen(
+    viewModel: OfficeMapScreenViewModel,
+    viewModel2: OfficeViewModel
+) {
     var scale by remember { mutableStateOf(1f) }
     var offset by remember { mutableStateOf(Offset.Zero) }
     val coworking = viewModel.coworking.collectAsState()
@@ -82,7 +86,6 @@ fun OfficeMapScreen(viewModel: OfficeMapScreenViewModel, viewModel2: OfficeViewM
         OperationState.ConferenceSix -> "Переговорка 6 этаж"
         else -> ""
     }
-
 
 
     val title = when (floorState.value) {
