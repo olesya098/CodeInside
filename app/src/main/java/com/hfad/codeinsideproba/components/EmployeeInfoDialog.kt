@@ -48,7 +48,7 @@ fun EmployeeInfoDialog(workstation: Workstation, onDismiss: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center,
                 modifier = Modifier
-                    .padding(bottom = 40.dp)
+                    .padding(bottom = 40.dp, start = 10.dp, end = 10.dp)
             ) {
 
                 Text(

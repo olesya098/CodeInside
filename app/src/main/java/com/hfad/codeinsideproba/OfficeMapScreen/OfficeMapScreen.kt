@@ -140,7 +140,6 @@ fun OfficeMapScreen(
                     detectTransformGestures { centroid, pan, zoom, rotation ->
                         val newScale = (scale * zoom).coerceIn(0.5f, 3f)
 
-                        // Максимальное смещение - 50% от размера экрана
                         val maxOffsetX = if (newScale > 1f) {
                             (size.width * (newScale - 1)) * 0.5f
                         } else {
@@ -148,20 +147,16 @@ fun OfficeMapScreen(
                         }
 
                         val maxOffsetY = if (newScale > 1f) {
-                            (size.height * (newScale - 1)) * 0.5f
+                            (size.height * (newScale - 1)) * 0.2f
                         } else {
                             0f
                         }
 
-                        // Ограничиваем смещение по обеим осям
-                        val constrainedX = (offset.x + pan.x)
-                            .coerceIn(-maxOffsetX, maxOffsetX)
-
-                        val constrainedY = (offset.y + pan.y)
-                            .coerceIn(-maxOffsetY, maxOffsetY)
+                        val newOffsetX = (offset.x + pan.x).coerceIn(-maxOffsetX, maxOffsetX)
+                        val newOffsetY = (offset.y + pan.y).coerceIn(-maxOffsetY, maxOffsetY)
 
                         scale = newScale
-                        offset = Offset(constrainedX, constrainedY)
+                        offset = Offset(newOffsetX, newOffsetY)
                     }
                 }
         ) {
