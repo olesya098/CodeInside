@@ -43,20 +43,22 @@ Manager – это мобильное приложение, которое по�
 Студентка 3 курса, специальность "Информационные системы и программирование"
 ГАПОУ ПО ПКИПТ (ИТ-колледж)
 
-## 📲 Скрины приложения
-![photo_2025-08-26_20-19-50](https://github.com/user-attachments/assets/48182abe-4b04-45fb-93ae-11b29b9c4263)
-![photo_2025-08-26_20-19-52](https://github.com/user-attachments/assets/baa99038-d82e-4b41-8ab5-0b52316cb883)
-![photo_2025-08-26_20-20-46](https://github.com/user-attachments/assets/c2966d98-f561-42b9-9a2d-38735b6091f4)
-![photo_2025-08-26_20-19-54](https://github.com/user-attachments/assets/c2fb3e07-e72e-4178-8ac1-409228076535)
-![photo_2025-08-26_20-19-55](https://github.com/user-attachments/assets/f6e9c0d7-e94d-4c61-9f75-a0b6cbccf88a)
-![photo_2025-08-26_20-19-57](https://github.com/user-attachments/assets/b0fb889f-a67b-4824-a7cf-6b071865518e)
-![photo_2025-08-26_20-19-58](https://github.com/user-attachments/assets/918879d6-916d-44cd-816c-7ac0ae6995c0)
-![photo_2025-08-26_20-19-59](https://github.com/user-attachments/assets/86eb28fa-57c9-47ae-8b49-40333d075c99)
-![photo_2025-08-26_20-20-01](https://github.com/user-attachments/assets/0b1e521c-fb0b-489b-ba30-3a3248627d05)
-![photo_2025-08-26_20-20-03](https://github.com/user-attachments/assets/60addb6c-1c6b-4b1d-9371-ab54d4709f68)
-![photo_2025-08-26_20-20-04](https://github.com/user-attachments/assets/39c3b260-0bb3-47cb-97ac-3522c18dce6f)
+## 📲 Скриншоты приложения
 
-
-
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/48182abe-4b04-45fb-93ae-11b29b9c4263" width="150">
+  <img src="https://github.com/user-attachments/assets/baa99038-d82e-4b41-8ab5-0b52316cb883" width="150">
+  <img src="https://github.com/user-attachments/assets/c2966d98-f561-42b9-9a2d-38735b6091f4" width="150">
+  <img src="https://github.com/user-attachments/assets/c2fb3e07-e72e-4178-8ac1-409228076535" width="150">
+  <br>
+  <img src="https://github.com/user-attachments/assets/f6e9c0d7-e94d-4c61-9f75-a0b6cbccf88a" width="150">
+  <img src="https://github.com/user-attachments/assets/b0fb889f-a67b-4824-a7cf-6b071865518e" width="150">
+  <img src="https://github.com/user-attachments/assets/918879d6-916d-44cd-816c-7ac0ae6995c0" width="150">
+  <img src="https://github.com/user-attachments/assets/86eb28fa-57c9-47ae-8b49-40333d075c99" width="150">
+  <br>
+  <img src="https://github.com/user-attachments/assets/0b1e521c-fb0b-489b-ba30-3a3248627d05" width="150">
+  <img src="https://github.com/user-attachments/assets/60addb6c-1c6b-4b1d-9371-ab54d4709f68" width="150">
+  <img src="https://github.com/user-attachments/assets/39c3b260-0bb3-47cb-97ac-3522c18dce6f" width="150">
+</div>
 
 
